@@ -1,0 +1,17 @@
+\chapter*{Introduction}
+\addcontentsline{toc}{chapter}{Introduction}
+\markboth{Introduction}{Introduction}
+\label{chap:introduction}
+%\minitoc
+
+Dans le cadre de notre formation en master informatique, nous avons réalisé un projet de fin d'études dans le domaine de sécurité. Le but de ce sujet est de surveiller et analyser le réseau de notre salle. Celle ci ne possédait pas de méthodes d'analyse de trafic par l'équipe réseau du bâtiment. En effet, la salle TIIR est sur un réseau séparé, les étudiants ont des droits administrateur (root) sur leur poste de travail et peuvent le configurer comme bon leur semble. Ces droits permettent également d'installer n'importe quel logiciel, ainsi que des clients de téléchargement qui peuvent être dans certains cas illégaux de part leur usage.
+
+Les comportements illicites sur les machines de l'université peuvent être sanctionnés. Par défaut, la responsabilité revient au responsable, dans le cas actuel, Julien Iguchi-Cartigny. Notre encadrant nous a donc proposé un sujet de PFE qui permettrait de faire le lien entre activité sur le réseau et l'étudiant qui l'utilise. Ainsi la responsabilité juridique reviendrait à l'utilisateur et non à l'enseignant. Ce sujet consiste donc à mettre en place une analyse réseau de la salle TIIR, des paquets entrant et sortant, mise en place d'une connexion VPN jusque OVH, entre la passerelle de la fac (université) et la machine distante.
+
+L'enjeu du PFE est donc de mettre en place une architecture réseau de la salle, avec une connexion vers la machine hôte présente chez OVH, tout en réussissant à analyser le trafic réseau, suivre son comportement en direct. Ceci doit être donc stable et facile à étudier pour détecter rapidement les comportements illicites. Les technologies utilisées doivent être efficaces et légères pour ne pas nuire au trafic réseau de la salle. Les données récupérées par la suite seraient affichées sur un tableau, une mise en forme graphique est donc nécessaire.
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "isae-report-template"
+%%% End:
