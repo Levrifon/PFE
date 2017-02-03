@@ -1,12 +1,14 @@
-\chapter{Contexte du PFE}
-\label{chap:premierchapitre}
+\chapter{Architecture}
+\label{chap:Architecture}
 
-\section{Architecture existante}
+\section{Analyse de l'existant}
+
 Avant notre projet, la salle TIIR n'avait pas la même configuration. En effet, le trafic réseau était envoyé vers une machine à l'étage du batiment M5, dans la salle des administrateurs. Ensuite il est filtré au niveau du Centre de Ressources Informatiques (CRI). Le CRI, gère tout le réseau à travers l'université. Ceux sont eux qui décident des politiques de filtrage sur le réseau, ils l'analysent également (en cas d'attaque par exemple). L'architecture de la salle était opaque, il n'existait pas de schéma ou de document représentant l'ancienne installation. Après discussion avec notre responsable, nous avons décider de reconfigurer les machines à zéro. Nous devions donc réinstaller une image Linux sur le poste ainsi que les logiciels nécessaire à son fonctionnement. Ceux-ci seront développés dans la partie correspondante "Technologies utilisées". L'ancienne architecture présente également divers inconvénients au niveau de l'autonomie sur le réseau dans la salle. 
 
 \section{Technologies existantes}
-Initialement, la machine des administrateurs possédait un protocole de sécurisation des communications nommé IPsec. IPsec (pour Internet Protocol Security) permet de chiffrer les communications entre pairs. Cette "pile de protocole" fut remis en cause par M. Cartigny puisque son analyse et son déboguage n'était pas simple.\\
-L'installation possédait également un serveur DNS et DHCP. Ceux ci servent respectivement à faire le lien entre une adresse IP et un nom de domaine (google.com par exemple) et d'attribuer des adresses IP aux différentes machines du réseau.\\
+Initialement, la machine des administrateurs utilisait un protocole de sécurisation des communications nommé IPsec. IPsec (pour Internet Protocol Security) permet de chiffrer les communications entre pairs. Cette technologie a été abandonnée car sa configuration et sa maintenance étaient trop complexes et trop longues.\\
+L'installation possédait également un serveur DNS et DHCP. Le serveur DNS sert à convertir un nom de domaine en une adresse IP. Le DHCP permet d'attribuer des adresses IP aux différentes machines du sous-réseau local.\\
+Enfin, le proxy était utilisé par les administrateurs du CRI. Tout le trafic sortant de la salle TIIR était redirigé vers ce proxy, ce qui permettait de filtrer les connexions.
 
 \section{Problèmes juridiques}
 D'après les explications de notre tuteur, les activités des étudiants étaient sous la respon
