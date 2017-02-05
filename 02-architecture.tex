@@ -3,15 +3,109 @@
 
 \section{Analyse de l'existant}
 
-Avant notre projet, la salle TIIR n'avait pas la même configuration. En effet, le trafic réseau était envoyé vers une machine à l'étage du batiment M5, dans la salle des administrateurs. Ensuite il est filtré au niveau du Centre de Ressources Informatiques (CRI). Le CRI, gère tout le réseau à travers l'université. Ceux sont eux qui décident des politiques de filtrage sur le réseau, ils l'analysent également (en cas d'attaque par exemple). L'architecture de la salle était opaque, il n'existait pas de schéma ou de document représentant l'ancienne installation. Après discussion avec notre responsable, nous avons décider de reconfigurer les machines à zéro. Nous devions donc réinstaller une image Linux sur le poste ainsi que les logiciels nécessaire à son fonctionnement. Ceux-ci seront développés dans la partie correspondante "Technologies utilisées". L'ancienne architecture présente également divers inconvénients au niveau de l'autonomie sur le réseau dans la salle. 
+A notre arrivée, le réseau de la salle TIIR était organisé autour d'un proxy. Toutes les transmissions passaient à travers ce proxy, avant d'être chiffrées en utilisant IPSec. 
+Ce système présentait plusieurs avantages. Le premier est la mise à disposition des administrateur d'un moyen de contrôler le trafic avec des règles de filtrage appliquées sur le proxy. Les activités illicites étaient ainsi rapidement détectées et bloquées automatiquement. Le second point positif est le fait que grâce à ce proxy, tout le trafic externe semblait provenir d'une seule et même machine, puisque l'adresse IP source de chaque paquet était l'adresse IP du proxy. L'inscription à de nouveaux services, comme l'accès à une bibliothèque digitale, en est ainsi facilité. Le chiffrement du trafic avec IPsec empêchait un quelconque vol des données sortant de l'université.
 
-\section{Technologies existantes}
-Initialement, la machine des administrateurs utilisait un protocole de sécurisation des communications nommé IPsec. IPsec (pour Internet Protocol Security) permet de chiffrer les communications entre pairs. Cette technologie a été abandonnée car sa configuration et sa maintenance étaient trop complexes et trop longues.\\
-L'installation possédait également un serveur DNS et DHCP. Le serveur DNS sert à convertir un nom de domaine en une adresse IP. Le DHCP permet d'attribuer des adresses IP aux différentes machines du sous-réseau local.\\
-Enfin, le proxy était utilisé par les administrateurs du CRI. Tout le trafic sortant de la salle TIIR était redirigé vers ce proxy, ce qui permettait de filtrer les connexions.
+Néanmoins cette solution fût remise en question. Tout d'abord, l'absence de documentation sur cette architecture posait problème. Les technologies utilisées (le proxy et IPsec) furent laborieuses à mettre en place, et la maintenance s'annonçait ardue sans schéma ou fichiers de configuration à disposition. La notion de proxy posait également problème. En effet, le trafic était automatiquement filtré. Aucune confiance n'était accordée aux étudiants, et leurs marges de manoeuvre, lorsqu'ils souhaitaient sortir des sentiers battus était plus que limitée. Impossible de lancer la commande nmap qui permet entre autre de scanner les ports d'un poste, dans un tel réseau.
 
-\section{Problèmes juridiques}
-D'après les explications de notre tuteur, les activités des étudiants étaient sous la respon
+Une nouvelle solution a donc été envisagée : la journalisation du trafic. après la suppression du proxy, la liberté des étudiants augmenterait considérablement. Le trafic serait chiffré avant même d'arriver sur les postes des administrateurs de l'université, afin de les empêcher d'analyser les communications. Néanmoins la sécurité pénale de l'encadrant serait assurée grâce aux journaux que l'on pourrait consulter en cas de problème grave. De plus, cette structure pourrait servir de base pour des projets MOCAD. En effet le nombre important de communications enregistrées leur permettrait de s'entraîner à l'extraction d'informations dans de grands volumes de données.
+
+
+\section{Conception de la nouvelle architecture}
+
+\subsection{Accès à Internet}
+
+Pour avoir accès à Internet depuis la salle TIIR, il faut mettre en place une passerelle. Cette passerelle est reliée d'un côté à la salle TIIR via un switch. Elle possède une adresse IP privée qui lui permet de communiquer avec tout le sous-réseau. De l'autre côté, cette passerelle possède une adresse publique. Cela signifie qu'elle peut communiquer sur Internet. Néanmoins, la topologie du réseau nous oblige à relier cette passerelle aux machines du CRI avant d'accéder à Internet (voir figure \ref{etape1}). 
+
+
+\begin{figure}[!h]
+\def\svgwidth{\columnwidth}
+\input{images/etape1.pdf_tex}
+\caption{Installation de la passerelle : Stargate}
+\label{etape1}
+\end{figure}
+
+A ce stade, l'accès au réseau mondial est garanti, mais il reste deux problèmes. Le premier est la présence des machines du CRI sur la route des paquets sortants. Les administrateurs peuvent facilement lire, et bloquer les communications en provenance de la salle TIIR. Le second est que tout le trafic sortant a pour adresse IP la machine du CRI. Cela signifie que si un étudiant a un comportement illicite sur le réseau, l'université peut en être tenue pour responsable.
+
+Pour résoudre ces problèmes, la solution retenue fût d'ajouter un VPS. Cela fixe une adresse IP source de toutes les communication sortantes différentes de celle de l'université. Celle-ci n'est donc plus directement l'émettrice des paquets interdits. Cela permet également de créer un tunnel sécurisé entre notre passerelle et le VPS (voir figure \ref{etape2}). Ainsi, les communications que le CRI retransmet sont chiffrées. Les administrateurs ne peuvent donc plus surveiller le trafic sortant de la salle TIIR, et encore moins le filtrer.
+
+\begin{figure}[!h]
+\centering
+\def\svgwidth{\columnwidth}
+\input{images/etape2.pdf_tex}
+\caption{Mise en place d'un tunnel sécurisé}
+\label{etape2}
+\end{figure}
+
+L'accès à Internet est maintenant garanti. Le CRI ne peut plus surveiller les communication et l'adresse de sortie n'est plus une adresse appartenant à l'université. Cette solution remplit donc les objectifs fixés auparavant.
+
+
+\subsection{Architecture pour l'enregistrement des données}
+
+Comme nous l'avons vu plus haut, le trafic de la salle TIIR dans son intégralité passe par la passerelle. C'est donc sur cette machine que l'enregistrement des données doit s'effectuer. Cependant, l'indexation et l'enregistrement des données consomme beaucoup de ressources. C'est pourquoi nous avons décidé d'utiliser une seconde machine pour effectuer cette tâche. Cette dernière fait partie du même sous-réseau que la salle TIIR. Ainsi, une fois les données analysées, un dashboard disponible sur une interface web permettra à tous les étudiants de constater certaines métriques sur les données transmises (voir figure \ref{etape3}).
+
+\begin{figure}[!h]
+\centering
+\def\svgwidth{\columnwidth}
+\input{images/etape3.pdf_tex}
+\caption{Ajout d'une machine de traitement des journaux : Prism}
+\label{etape3}
+\end{figure}
+
+Cette architecture est la dernière itération de notre raisonnement. Elle permet de contourner tous les problèmes inhérents à l'ancienne solution. Le CRI ne peut plus voir ni filtrer les paquets des étudiants, l'adresse de sortie n'est pas une adresse de l'université, l'enregistrement des données permet de se couvrir juridiquement en cas de problème, et enfin la séparation entre la machine qui enregistre les données et celle qui les traite permet un gain de performances non négligeable.
+
+
+\section{Implémentation de la nouvelle architecture}
+
+Nous allons présenter ici l'implémentation de l'architecture, qui permettra à tous les étudiants d'accéder à Internet, mais également à la machine qui traite les données d'être connectée à la passerelle.
+
+\subsection{Accès à Internet}
+
+La première étape pour garantir l'accès à Internet fût d'installer la passerelle Stargate. Nous avons utilisé un serveur disponible dans le bâtiment, sur lequel nous avons installé un Debian, un système d'exploitation Linux libre. Nous l'avons ensuite relié à la salle TIIR pour le configurer à distance. Le défi ici était d'installer cette machine en garantissant une interruption du service minimale. Nous avons donc conçu le plan d'adressage, le DHCP, le DNS et le tunnel VPN avant d'effectuer ce changement. Le VPS que nous avons loué appartient à OVH. Nous avons choisi ce prestataire car il est l'un des partenaires de l'université.
+
+\subsubsection{Le plan d'adressage}
+
+La passerelle possède deux interfaces. La première est reliée à la salle TIIR, et la seconde est reliée indirectement au VPS. Pour la première, le choix de l'adressage a été assez simple. En effet, la salle TIIR appartenait déjà à un sous-réseau local : 10.1.1.0/24. La seconde est reliée à la passerelle du CRI. Une adresse IP lui a été distribuée : 134.206.225.12/32. Il était impératif dans notre configuration de faire passer le trafic via la passerelle du CRI qui avait pour adresse : 134.206.225.1/32. Cette dernière retransmettait alors les paquets vers le VPS OVH à l'adresse 137.74.40.238/32. La figure \ref{plan_adressage} résume ces adresses. Les modifications d'adresses sont faites dans le fichier /etc/network/interfaces qui permet de donner une adresse à une interface réseau, ainsi que définir sa passerelle par défaut.
+
+\begin{figure}[!h]
+\centering
+\def\svgwidth{\columnwidth}
+\input{images/plan_adressage.pdf_tex}
+\caption{Plan d'adressage du réseau}
+\label{plan_adressage}
+\end{figure}
+
+\subsubsection{Le serveur DHCP et le serveur DNS}
+
+Avant de placer notre passerelle à la place de l'existante, certaines modifications restaient à effectuer pour garantir l'accès à Internet des utilisateurs de la salle TIIR. Tout d'abord, les adresses des postes de la salle ne sont pas fixes. Elles appartiennent toutes au sous-réseau 10.1.1.0/24 mais sont distribuées à la demande par un serveur DHCP qui se trouve sur la passerelle en service. Il faut également installer un serveur DNS qui permettra de résoudre les noms de domaines demandés par les étudiants, c'est à dire transformer les URL en adresses IP. S'il ne connait pas le domaine demandé, le serveur DNS devra rediriger la requête vers les serveurs DNS fournis par OVH. 
+
+Pour implémenter cette solution, nous avons choisi d'utiliser dnsmasq. Cet outil permet en effet de regrouper les fonctions de DNS et de DHCP. La configuration choisie distribue des adresses entre 10.1.1.100 et 10.1.1.199. Cela permet de s'assurer une plage d'adresses inutilisées en cas d'ajout de machines qui nécessiteraient une adresse IP statique.
+
+\subsubsection{Le tunnel VPN}
+
+Afin d'éviter que le CRI ne filtre le trafic de la salle TIIR, celui-ci est chiffré par Stargate et déchiffré ensuite par le VPS OVH. Pour réaliser ce chiffrement, nous avons utilisé un tunnel VPN en point à point. Quand un étudiant émet un paquet depuis la salle TIIR, il arrive sur l'interface privée de la passerelle Stargate. Les règles de routage redirigent ensuite ce paquet vers une interface virtuelle (ici tun0). Cette interface est en fait reliée au programme OpenVPN qui chiffre le contenu du paquet. Puis, une seconde règle de routage redirige alors le paquet chiffré vers l'interface publique de la passerelle Stargate, qui expédie les données vers le CRI sur le port 1194, le port par  défaut pour les tunnels VPN. Nous avons demandé au CRI de retransmettre ces paquets vers le VPS OVH qui va effectuer le processus inverse. Les données seront redirigées vers une interface virtuelle reliée à OpenVPN, qui va déchiffrer le contenu des paquets et les renvoyer vers Internet. Les mêmes manipulations sont réalisées dans l'autre sens lorsque le serveur contacté par l'utilisateur répond. Les données sont chiffrées avec une clef secrète générée au préalable et transmise au VPS via un canal sécurisé. La figure \ref{tunnel} illustre ce principe.
+
+\begin{figure}[!h]
+\centering
+\def\svgwidth{\columnwidth}
+\input{images/tunnel.pdf_tex}
+\caption{Fonctionnement du tunnel VPN}
+\label{tunnel}
+\end{figure}
+
+\subsection{Enregistrement des données}
+
+Afin d'enregistrer les données, nous avons ajouté une seconde machine au sous-réseau de la salle TIIR : Prism. Cette machine devra avoir une adresse IP statique pour être facilement accessible depuis le sous-réseau. Nous lui avons attribué l'adresse 10.1.1.2/32. Cette machine a été reformatée. Nous avons également installé un Debian. Cette machine a deux rôles. Elle doit indexer et enregistrer les données concernant le trafic de la salle TIIR mais également proposer une interface web pour faciliter la lecture de ces données. La figure \ref{architecture_finale} montre l'architecture finale du réseau.
+
+\begin{figure}[!h]
+\centering
+\def\svgwidth{\columnwidth}
+\input{images/architecture_finale.pdf_tex}
+\caption{Architecture du réseau de la salle TIIR}
+\label{architecture_finale}
+\end{figure}
+
+
 %%% Local Variables:
 %%% mode: latex
 %%% TeX-master: "isae-report-template"
