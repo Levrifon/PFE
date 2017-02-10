@@ -24,7 +24,7 @@ Pour mettre en place la capture de données, plusieurs solutions ont été envis
 \label{logstash}
 \end{figure}
 
-Logstash est un outil de récupération et d'analyse de fichiers journaux. Il permet de récupérer des fichiers formatés de façon différente et de les organiser sous forme de paires clef/valeur. Il peut notamment formater les dates sous un format standard ou reconnaître des numéros de version grâce à des Regex. Une fois la transformation des fichiers terminée, il renvoie le fichier vers Elasticsearch
+Logstash est un outil d'aggrégation et d'analyse de fichiers journaux. Il permet de récupérer des fichiers formatés de façon différente et de les organiser sous forme de paires clef/valeur. Il peut notamment formater les dates sous un format standard ou reconnaître des numéros de version grâce à des regex. Une fois la transformation des fichiers terminée, il renvoie le fichier vers Elasticsearch
 
 \subsubsection{Elasticsearch}
 
@@ -36,7 +36,7 @@ Logstash est un outil de récupération et d'analyse de fichiers journaux. Il pe
 \label{elasticsearch}
 \end{figure}
 
-Elasticsearch est une base de données NoSQL orientée vers le Big Data. Elle fonctionne comme un cluster, c'est à dire un regroupement de noeuds. Chaque noeud est une instance d'Elsaticsearch et la base de données fonctionne de façon distribuée. Cela lui permet de gérer de très grands volumes de données et assure une évolutivité importante. Elasticsearch est basé sur un framework Apache Lucene, ce qui lui permet de répondre à des requêtes sur du texte dans un temps minime.
+Elasticsearch est une base de données NoSQL orientée vers le Big Data. Elle fonctionne comme un cluster, c'est à dire un regroupement de noeuds. Chaque noeud est une instance d'Elasticsearch et la base de données fonctionne de façon distribuée. Cela lui permet de gérer de très grands volumes de données et assure une évolutivité importante. Elasticsearch est basé sur un framework Apache Lucene, ce qui lui permet de répondre à des requêtes sur du texte dans un temps minime.
 
 \subsubsection{Kibana}
 
@@ -67,7 +67,7 @@ Kibana est le dernier outil utilisé pour le traitement des données. C'est une 
 \label{docker}
 \end{figure}
 
-Docker est un système de virtualisation qui fonctionne par conteneurs. Son principal avantage est d'isoler les applications lancées dans ses conteneurs. Son utilisation dans le projet se justifie pour augmenter la tolérance aux pannes. En effet, nous ne souhaitons pas qu'une panne de Bro sur la passerelle Stargate nous oblige à redémarrer la machine. Cela engendrerait une coupure Internet indésirable pour les utilisateurs de la salle TIIR. Docker est donc une solution qui permet de ne pas impacter le reste du système en cas de dysfonctionnement d'un des conteneurs. Les applications lancées dans Docker sont Bro, Elasticsearch, Kibana et Logstash. Si l'un d'entre eux s'arrête il sera toujours possible d'utiliser les services des autres conteneurs. Si Logstash s'arrête, l'interface web Kibana fonctionnera toujours par exemple. La figure \ref{projet_final} montre le système et les différentes applications installées sur chacune des machines.
+Docker est un système de virtualisation qui fonctionne par conteneurs. Son principal avantage est d'isoler les applications lancées dans ses conteneurs. Son utilisation dans le projet se justifie pour augmenter la tolérance aux pannes. En effet, il n'est pas souhaitable qu'une panne de Bro sur la passerelle Stargate oblige à redémarrer la machine. Cela engendrerait une coupure Internet indésirable pour les utilisateurs de la salle TIIR. Docker est donc une solution qui permet de ne pas impacter le reste du système en cas de dysfonctionnement d'un des conteneurs. Les applications lancées dans Docker sont Bro, Elasticsearch, Kibana et Logstash. Si l'un d'entre eux s'arrête il sera toujours possible d'utiliser les services des autres conteneurs. Si Logstash s'arrête, l'interface web Kibana fonctionnera toujours par exemple. La figure \ref{projet_final} montre le système et les différentes applications installées sur chacune des machines.
 
 \begin{figure}[!h]
 \centering
