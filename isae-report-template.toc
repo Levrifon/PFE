@@ -1,0 +1,23 @@
+\select@language {french}
+\contentsline {chapter}{Introduction}{1}{chapter*.5}
+\contentsline {chapter}{\numberline {1}Architecture}{3}{chapter.1}
+\contentsline {section}{\numberline {1.1}Analyse de l'existant}{3}{section.1.1}
+\contentsline {section}{\numberline {1.2}Conception de la nouvelle architecture}{4}{section.1.2}
+\contentsline {subsection}{\numberline {1.2.1}Acc\IeC {\`e}s \IeC {\`a} Internet}{4}{subsection.1.2.1}
+\contentsline {subsection}{\numberline {1.2.2}Architecture pour l'enregistrement des donn\IeC {\'e}es}{5}{subsection.1.2.2}
+\contentsline {section}{\numberline {1.3}Impl\IeC {\'e}mentation de la nouvelle architecture}{6}{section.1.3}
+\contentsline {subsection}{\numberline {1.3.1}Acc\IeC {\`e}s \IeC {\`a} Internet}{6}{subsection.1.3.1}
+\contentsline {subsubsection}{Le plan d'adressage}{6}{section*.9}
+\contentsline {subsubsection}{Le serveur DHCP et le serveur DNS}{7}{section*.11}
+\contentsline {subsubsection}{Le tunnel VPN}{8}{section*.12}
+\contentsline {subsection}{\numberline {1.3.2}Enregistrement des donn\IeC {\'e}es}{8}{subsection.1.3.2}
+\contentsline {chapter}{\numberline {2}Enregistrement des donn\IeC {\'e}es}{11}{chapter.2}
+\contentsline {section}{\numberline {2.1}Les enjeux de la journalisation}{11}{section.2.1}
+\contentsline {section}{\numberline {2.2}Les outils utilis\IeC {\'e}s}{11}{section.2.2}
+\contentsline {subsection}{\numberline {2.2.1}Bro}{11}{subsection.2.2.1}
+\contentsline {subsection}{\numberline {2.2.2}La pile ELK}{12}{subsection.2.2.2}
+\contentsline {subsubsection}{Logstash}{12}{section*.15}
+\contentsline {subsubsection}{Elasticsearch}{12}{section*.17}
+\contentsline {subsubsection}{Kibana}{13}{section*.19}
+\contentsline {subsection}{\numberline {2.2.3}Docker}{13}{subsection.2.2.3}
+\contentsline {chapter}{Conclusion}{15}{chapter*.24}

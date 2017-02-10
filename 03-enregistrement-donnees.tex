@@ -1,17 +1,17 @@
 \chapter{Enregistrement des données}
 \label{chap:Enregistrement des données}
 
-\section{Pourquoi journaliser ?}
+\section{Les enjeux de la journalisation}
 
-L'enregistrement des données circulant sur le réseau correspond à plusieurs besoins. En effet, avec la nouvelle architecture, les étudiants sont libres de faire ce que bon leur semble. Il devient alors indispensable d'être capable de connaître qui est l'auteur d'une action illicite sur le réseau si cela se produit. D'un point de vue légal, l'administrateur du réseau est responsable de ce qui en sort. Afin de se couvrir pénalement, M. Iguchi-Cartigny (alias Kartoche) n'a pas d'autre choix que de garder l'historique des connexions.
-Cela peut servir également un but statistique. En effet, avec de tels volumes de données, on peut voir les sites préférés des étudiants, ou encore analyser leur sérieux et leur productivité en fonction de l'heure, ou de l'enseignant présent dans la salle. Cela pourrait donc permettre d'éventuellement un jour peut-être améliorer même juste un peu la qualité des enseignements dispensés.
+L'enregistrement des données circulant sur le réseau correspond à plusieurs besoins. En effet, avec la nouvelle architecture, les étudiants sont libres de faire ce que bon leur semble. Il devient alors indispensable d'être capable de connaître qui est l'auteur d'une action illicite sur le réseau si cela se produit. D'un point de vue légal, l'administrateur du réseau est responsable de ce qui en sort. Afin de se couvrir pénalement, M. Iguchi-Cartigny n'a pas d'autre choix que de garder l'historique des connexions.
+Cela peut servir également un but statistique. En effet, avec de tels volumes de données, on peut voir les sites préférés des étudiants, ou encore analyser leur sérieux et leur productivité en fonction de l'heure, ou de l'enseignant présent dans la salle.
 Enfin, des volumes de données aussi importants peuvent servir d'entraînement pour le Master MOCAD ou encore pour les cours de calculs distribués en TIIR.
 
 \section{Les outils utilisés}
 
 \subsection{Bro}
 
-Pour mettre en place la capture de données, plusieurs solutions ont été envisagées. Nous avions commencé à enregistrer les paquets en utilisant les iptables. Mais cette solution n'était pas satisfaisante car les fichiers journaux étaient trop gros et le filtrage pas assez fin. Nous nous sommes donc penchés vers des solutions plus abouties. Les détecteurs d'intrusion sont des logiciels parfaits pour notre usage. En effet ils analysent le trafic en temps réel et possèdent une fonctionnalité d'enregistrement des données analysées. Celui que nous avons utilisé s'appelle Bro. Il est moins documenté que son concurrent Snort, mais ses performances ne sont pas affectées par le nombre d'intrusions détectées au préalable. Ils nous permet, via des scripts, de choisir le degré d'inspection des paquets. On peut par exemple grâce à lui récupérer le contenu d'un mail si ce dernier n'était pas chiffré.
+Pour mettre en place la capture de données, plusieurs solutions ont été envisagées. Nous avions commencé à enregistrer les paquets en utilisant les iptables. Mais cette méthode n'était pas satisfaisante car les fichiers journaux étaient trop gros et le filtrage pas assez fin. Nous nous sommes donc penchés vers des solutions plus abouties. Les détecteurs d'intrusion sont des logiciels adaptés à notre usage. En effet ils analysent le trafic en temps réel et possèdent une fonctionnalité d'enregistrement des données analysées. Celui que nous avons utilisé s'appelle Bro. Ce dernier est moins documenté que son concurrent Snort, mais ses performances ne sont pas affectées par le nombre d'intrusions détectées au préalable. Il nous permet, via des scripts, de choisir le degré d'inspection des paquets. On peut par exemple grâce à lui récupérer le contenu d'un mail si ce dernier n'était pas chiffré.
 
 \subsection{La pile ELK}
 \subsubsection{Logstash}
@@ -48,7 +48,7 @@ Elasticsearch est une base de données NoSQL orientée vers le Big Data. Elle fo
 \label{kibana}
 \end{figure}
 
-Kibana est le dernier outil utilisé pour le traitement des données. C'est une interface web qui permet de requêter Elasticsearch pour en extraire les informations souhaitées. Ces informations peuvent alors facilement être affichées en divers graphiques directement grâce à Kibana. Cela permet une lecture très intuitive de l'enregistrement des données. Le tableau de bord personnalisable permet d'avoir en permanence un aperçu sur les données qui sont enregistrées comme sur la figure \ref{kibana}. Dans notre cas, il permettrait par exemple d'afficher les différents sites web les plus consultés pendant la dernière heure par les étudiants.
+Kibana est le dernier outil utilisé pour le traitement des données. C'est une interface web qui permet de requêter Elasticsearch pour en extraire les informations souhaitées. Ces informations peuvent facilement être affichées en divers graphiques dynamiquement grâce à Kibana. La lecture de l'enregistrement des données est donc très intuitive. Le tableau de bord personnalisable permet d'avoir en permanence un aperçu sur les données qui sont enregistrées comme sur la figure \ref{kibana}. Dans notre cas, il permettrait par exemple d'afficher les différents sites web les plus consultés pendant la dernière heure par les étudiants.
 
 \begin{figure}[!h]
 \centering
